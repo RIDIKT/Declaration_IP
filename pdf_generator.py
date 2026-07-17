@@ -10,12 +10,14 @@
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from pypdf import PdfReader, PdfWriter
-import json, io, os
+import json, io, os,sys
 
 PAGE_W, PAGE_H = 595, 842
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TILE_DIR = os.path.join(BASE_DIR, "pdf_template")
-
 with open(os.path.join(TILE_DIR, "tile_data.json")) as f:
     TILES = json.load(f)
 

@@ -3,7 +3,16 @@ from tax_calculator import calculate_tax_by_quarters
 from pdf_generator import generate_pdf, build_declaration_data
 import tempfile, os
 
-app = Flask(__name__)
+import sys
+
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(__name__,
+            template_folder=os.path.join(BASE_DIR, 'templates'),
+            static_folder=os.path.join(BASE_DIR, 'static'))
 
 @app.template_filter('rub')
 def format_rub(value):
@@ -167,4 +176,11 @@ def download_declaration():
 
 
 if __name__ == '__main__':
-    app.run()
+    import webbrowser
+    import threading
+
+    def open_browser():
+        webbrowser.open_new('http://127.0.0.1:5000')
+
+    threading.Timer(1.5, open_browser).start()
+    app.run(debug=False)
