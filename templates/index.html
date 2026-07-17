@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>Налоговая декларация</title>
     <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
-    <link rel="alternate icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
     <style>
         * { box-sizing: border-box; }
         body {
@@ -17,6 +15,8 @@
             justify-content: center;
             gap: 30px;
         }
+
+        /* --- Левая панель "Важные сроки" --- */
         .info-panel {
             background: #ffffff;
             padding: 25px 30px;
@@ -27,27 +27,21 @@
             font-size: 13px;
             color: #444;
         }
-        .info-panel h3 {
-            font-size: 16px;
-            margin-top: 0;
-            margin-bottom: 14px;
-            color: #1a1a1a;
-        }
+        .info-panel h3 { font-size: 16px; margin-top: 0; margin-bottom: 14px; color: #1a1a1a; }
         .info-panel p { margin-bottom: 12px; line-height: 1.5; }
         .info-panel .note {
-            background: #fdecea;
-            color: #c0392b;
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-size: 12.5px;
+            background: #fdecea; color: #c0392b;
+            padding: 10px 12px; border-radius: 6px; font-size: 12.5px;
         }
+
+        /* --- Основная форма --- */
         .container {
             background: #ffffff;
             padding: 30px 40px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             width: 100%;
-            max-width: 480px;
+            max-width: 520px;
         }
         h1 { font-size: 22px; color: #1a1a1a; margin-bottom: 25px; text-align: center; }
         .field { margin-bottom: 18px; }
@@ -63,102 +57,95 @@
         .hint { font-size: 12.5px; color: #666; margin-top: 6px; }
         .warning {
             display: none;
-            color: #c0392b;
-            background: #fdecea;
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-top: 8px;
-            font-size: 13px;
+            color: #c0392b; background: #fdecea;
+            padding: 8px 12px; border-radius: 6px;
+            margin-top: 8px; font-size: 13px;
+        }
+        .error-banner {
+            background: #fdecea; color: #c0392b;
+            padding: 12px 16px; border-radius: 6px;
+            margin-bottom: 20px; font-size: 13.5px;
         }
         button {
-            width: 100%;
-            padding: 12px;
-            background-color: #2f6fed;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
+            width: 100%; padding: 12px;
+            background-color: #2f6fed; color: white;
+            border: none; border-radius: 6px;
+            font-size: 15px; font-weight: 600;
+            cursor: pointer; margin-top: 10px;
         }
         button:hover { background-color: #2559c7; }
-		.tooltip-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: #94a3b8;
-    color: white;
-    font-size: 11px;
-    font-weight: bold;
-    font-style: italic;
-    cursor: help;
-    margin-left: 6px;
-    position: relative;
-    vertical-align: middle;
-}
 
-.tooltip-icon .tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    width: 240px;
-    background-color: #333;
-    color: #fff;
-    text-align: left;
-    border-radius: 6px;
-    padding: 10px 12px;
-    position: absolute;
-    z-index: 10;
-    bottom: 130%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 12.5px;
-    font-weight: normal;
-    font-style: normal;
-    line-height: 1.4;
-    transition: opacity 0.2s;
-}
+        /* --- Тултип "i" --- */
+        .tooltip-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 16px; height: 16px; border-radius: 50%;
+            background-color: #94a3b8; color: white;
+            font-size: 11px; font-weight: bold; font-style: italic;
+            cursor: help; margin-left: 6px; position: relative; vertical-align: middle;
+        }
+        .tooltip-icon .tooltip-text {
+            visibility: hidden; opacity: 0; width: 240px;
+            background-color: #333; color: #fff; text-align: left;
+            border-radius: 6px; padding: 10px 12px;
+            position: absolute; z-index: 10; bottom: 130%; left: 50%;
+            transform: translateX(-50%);
+            font-size: 12.5px; font-weight: normal; font-style: normal;
+            line-height: 1.4; transition: opacity 0.2s;
+        }
+        .tooltip-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
 
-.tooltip-icon .tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #333 transparent transparent transparent;
-}
-
-.tooltip-icon:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
+        /* --- Компактный блок "Данные для декларации" --- */
+        fieldset.declaration-fields {
+            border: 1px solid #e2e5ea;
+            border-radius: 8px;
+            padding: 14px 16px 6px;
+            margin-bottom: 18px;
+        }
+        fieldset.declaration-fields legend {
+            font-size: 13.5px; font-weight: 600; color: #444; padding: 0 6px;
+        }
+        .compact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 12px;
+        }
+        .compact-grid .field { margin-bottom: 10px; }
+        .compact-grid label { font-size: 12.5px; margin-bottom: 4px; }
+        .compact-grid input { padding: 7px 10px; font-size: 13px; }
+        .span-2 { grid-column: span 2; }
+        .checkbox-row {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 14px; font-size: 13.5px; color: #444;
+        }
+        .checkbox-row input { width: auto; }
     </style>
 </head>
 <body>
 
+    <!-- Левая панель со сроками -->
     <div class="info-panel">
         <h3>Важные сроки</h3>
         <p><strong>Срок сдачи декларации:</strong> с 1 января по 25 апреля года, следующего за отчётным.</p>
         <p><strong>Срок уплаты страховых взносов:</strong> до последнего рабочего дня отчётного года.</p>
-        <p class="note">Налог уменьшается на страховые взносы <u>заранее</u> — на дату расчёта, а не только после их фактической оплаты. Простыми словами: в Декларации мы можем уменьшать налог за любой квартал, даже если оплатим взносы в последний день года. </p>
+        <p class="note">Налог уменьшается на страховые взносы <u>заранее</u> — на дату расчёта, а не только после их фактической оплаты.</p>
     </div>
 
     <div class="container">
         <h1>Заполнение декларации</h1>
-			{% if errors %}
-<				div style="background:#fdecea; color:#c0392b; padding:12px 16px; border-radius:6px; margin-bottom:20px; font-size:13.5px;">
-			<strong>Пожалуйста, исправьте:</strong>
-				<ul style="margin:6px 0 0 18px; padding:0;">
-					{% for e in errors %}<li>{{ e }}</li>{% endfor %}
-				</ul>
-			</div>
-{% endif %}
-        <form method="POST" action="/">
+
+        <!-- Блок ошибок валидации (появляется, если errors переданы из app.py) -->
+        {% if errors %}
+        <div class="error-banner">
+            <strong>Пожалуйста, исправьте:</strong>
+            <ul style="margin:6px 0 0 18px; padding:0;">
+                {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/" id="mainForm">
+
+            <!-- ===== ОСНОВНЫЕ ПОЛЯ РАСЧЁТА (всегда обязательны) ===== -->
             <div class="field">
                 <label for="year">Год</label>
                 <input type="number" id="year" name="year" required onchange="showInsuranceHint()">
@@ -182,51 +169,99 @@
 
             <div class="field">
                 <label for="tax_rate">
-    Процентная ставка, %
-    <span class="tooltip-icon">i
-        <span class="tooltip-text">
-            Налоговая ставка может отличаться в зависимости от региональных законов — от 0% до 6%. Уточняйте актуальную ставку в вашем региональном ФНС или региональном законе.
-        </span>
-    </span>
-</label>
+                    Процентная ставка, %
+                    <span class="tooltip-icon">i
+                        <span class="tooltip-text">
+                            Налоговая ставка может отличаться в зависимости от региональных законов — от 0% до 6%. Уточняйте актуальную ставку в вашем региональном ФНС или региональном законе.
+                        </span>
+                    </span>
+                </label>
                 <input type="number" step="0.01" id="tax_rate" name="tax_rate" placeholder="Например: 6" required>
             </div>
 
             <div class="field">
-                <label for="q1">Доход за 1 квартал (с 1 января по 31 марта).</label>
+                <label>
+                    <input type="checkbox" name="has_employees" style="width:auto; margin-right:8px;">
+                    Есть сотрудники
+                </label>
+            </div>
+
+            <div class="field">
+                <label for="q1">Доход за 1 квартал (с 1 января по 31 марта)</label>
                 <input type="text" inputmode="decimal" id="q1" name="q1" required oninput="formatMoneyInput(this)">
-
             </div>
-
             <div class="field">
-                <label for="q2">Доход за 2 квартал (с 1 апреля по 30 июня).</label>
+                <label for="q2">Доход за 2 квартал (с 1 апреля по 30 июня)</label>
                 <input type="text" inputmode="decimal" id="q2" name="q2" required oninput="formatMoneyInput(this)">
-
             </div>
-
             <div class="field">
-                <label for="q3">Доход за 3 квартал (с 1 июля по 30 сентября).</label>
+                <label for="q3">Доход за 3 квартал (с 1 июля по 30 сентября)</label>
                 <input type="text" inputmode="decimal" id="q3" name="q3" required oninput="formatMoneyInput(this)">
-
             </div>
-
             <div class="field">
-                <label for="q4">Доход за 4 квартал ( с 1 октября по 31 декабря).</label>
+                <label for="q4">Доход за 4 квартал (с 1 октября по 31 декабря)</label>
                 <input type="text" inputmode="decimal" id="q4" name="q4" required oninput="formatMoneyInput(this)">
-
             </div>
+
+            <!-- ===== Переключатель: только расчёт, без данных для декларации ===== -->
+            <div class="checkbox-row">
+                <input type="checkbox" id="calc_only" name="calc_only" checked onchange="toggleDeclarationFields()">
+                <label for="calc_only" style="margin:0; font-weight:normal;">
+                    Только расчёт (без формирования PDF-декларации)
+                </label>
+            </div>
+
+            <!-- ===== Компактный блок данных для декларации (не обязателен, если calc_only включён) ===== -->
+            <fieldset class="declaration-fields" id="declarationFieldset">
+                <legend>Данные для декларации (нужны только для PDF)</legend>
+                <div class="compact-grid">
+                    <div class="field span-2">
+                        <label for="inn">ИНН</label>
+                        <input type="text" id="inn" name="inn" maxlength="12" class="decl-field">
+                    </div>
+                    <div class="field">
+                        <label for="fio_line1">Фамилия</label>
+                        <input type="text" id="fio_line1" name="fio_line1" class="decl-field">
+                    </div>
+                    <div class="field">
+                        <label for="fio_line2">Имя</label>
+                        <input type="text" id="fio_line2" name="fio_line2" class="decl-field">
+                    </div>
+                    <div class="field span-2">
+                        <label for="fio_line3">Отчество (если есть)</label>
+                        <input type="text" id="fio_line3" name="fio_line3">
+                    </div>
+                    <div class="field">
+                        <label for="phone">Телефон</label>
+                        <input type="text" id="phone" name="phone" placeholder="+7...">
+                    </div>
+                    <div class="field">
+                        <label for="oktmo">ОКТМО</label>
+                        <input type="text" id="oktmo" name="oktmo" maxlength="11" class="decl-field">
+                    </div>
+                    <div class="field">
+                        <label for="tax_authority">Код налог. органа</label>
+                        <input type="text" id="tax_authority" name="tax_authority" maxlength="4" class="decl-field">
+                    </div>
+                    <div class="field">
+                        <label for="location_code">Код места</label>
+                        <input type="text" id="location_code" name="location_code" value="120">
+                    </div>
+                    <div class="field span-2">
+                        <label for="period_code">Код налогового периода (34 — обычный год)</label>
+                        <input type="text" id="period_code" name="period_code" value="34">
+                    </div>
+                </div>
+            </fieldset>
 
             <button type="submit">Рассчитать</button>
         </form>
     </div>
 
     <script>
-        // Должно совпадать с INSURANCE_CONTRIBUTIONS в tax_calculator.py
-        const insuranceByYear = {
-            2024: 49500,
-            2025: 53658,
-            2026: 57390
-        };
+        // --- Подсказка по сумме страховых взносов для выбранного года ---
+        // ВАЖНО: значения должны совпадать с INSURANCE_CONTRIBUTIONS в tax_calculator.py
+        const insuranceByYear = { 2024: 49500, 2025: 53658, 2026: 57390 };
 
         function showInsuranceHint() {
             const year = document.getElementById('year').value;
@@ -238,21 +273,36 @@
             }
         }
 
+        // --- Предупреждение, если выбрана не УСН ---
         function checkTaxSystem() {
             const select = document.getElementById('tax_system');
             const warning = document.getElementById('tax_warning');
             warning.style.display = (select.value === 'usn') ? 'none' : 'block';
         }
-		function formatMoneyInput(el) {
-		// Убираем всё, кроме цифр и точки
-		let value = el.value.replace(/\s/g, '').replace(/[^0-9.]/g, '');
-		if (value === '') return;
 
-		let parts = value.split('.');
-		// Добавляем пробелы между разрядами в целой части
-		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-		el.value = parts.length > 1 ? parts[0] + '.' + parts[1] : parts[0];
-}
+        // --- Форматирование сумм дохода с пробелами между разрядами ---
+        function formatMoneyInput(el) {
+            let value = el.value.replace(/\s/g, '').replace(/[^0-9.]/g, '');
+            if (value === '') return;
+            let parts = value.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            el.value = parts.length > 1 ? parts[0] + '.' + parts[1] : parts[0];
+        }
+
+        // --- Переключение обязательности полей для декларации ---
+        // Если "Только расчёт" включён — поля для PDF необязательны.
+        // Если выключен (пользователь хочет PDF) — делаем ключевые поля обязательными.
+        function toggleDeclarationFields() {
+            const calcOnly = document.getElementById('calc_only').checked;
+            const requiredFields = document.querySelectorAll('.decl-field');
+            requiredFields.forEach(field => {
+                field.required = !calcOnly;
+            });
+            document.getElementById('declarationFieldset').style.opacity = calcOnly ? '0.6' : '1';
+        }
+
+        // Применяем состояние при загрузке страницы
+        toggleDeclarationFields();
     </script>
 </body>
 </html>
