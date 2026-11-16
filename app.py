@@ -179,8 +179,14 @@ if __name__ == '__main__':
     import webbrowser
     import threading
 
-    def open_browser():
-        webbrowser.open_new('http://127.0.0.1:5000')
+    from werkzeug.serving import make_server
 
-    threading.Timer(1.5, open_browser).start()
-    app.run(debug=False)
+    # Bind before opening the browser; port 0 lets Windows choose a free port.
+    with make_server('127.0.0.1', 0, app, threaded=True) as server:
+        url = f'http://127.0.0.1:{server.server_port}'
+        print(f'Откройте {url} в браузере. Для остановки нажмите Ctrl+C.', flush=True)
+        threading.Thread(target=webbrowser.open_new, args=(url,), daemon=True).start()
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            pass
